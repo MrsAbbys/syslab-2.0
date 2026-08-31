@@ -1,58 +1,86 @@
-# Práctica: Despliegue Multi-Contenedor y Persistencia SysLab 2.0
+# 🚀 Proyecto de Sistemas Paralelos — SysLab 2.0
 
-**Materia:** Sistemas Paralelos  
-**Docente:** Ing. Elias Cassal Baldiviezo  
-**Estudiante:** Abigail Quispe  
-**Año:** 2026  
-
----
-
-## 📌 Descripción General
-Implementación, configuración y orquestación de un entorno de desarrollo multi-contenedor basado en la arquitectura **SysLab 2.0**. El sistema integra servicios desacoplados para Backend, Frontend y Persistencia Relacional con PostgreSQL, gestionando el modelado de datos mediante Prisma ORM y la gobernanza del backend mediante directrices y skills para agentes de Inteligencia Artificial.
+> **Integrantes del Grupo:**
+> * Abigail Quispe
+>
+> **Docente:** Ing. Elias Cassal Baldiviezo  
+> **Materia:** Sistemas Paralelos  
+> **Arquitectura Base:** SysLab 2.0  
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## 📌 1. Descripción del Proyecto
 
-| Servicio | Contenedor / Imagen | Puerto | Descripción Técnica |
-| :--- | :--- | :--- | :--- |
-| **Database** | syslab_db (postgres:15-alpine) | 5432:5432 | Servidor relacional PostgreSQL con volumen persistente. |
-| **Backend** | syslab_backend (Node.js 18) | 4000:4000 | API estructurada con Prisma Client y migraciones. |
-| **Frontend** | syslab_frontend (Node.js 18) | 3000:3000 | Entorno desacoplado en contenedor Docker. |
-| **Agente** | TasteSkill & Rules Engine | N/A | Reglas SysLab 2.0 y gobernanza de persistencia. |
+El presente proyecto implementa un entorno de desarrollo multi-contenedor basado en la arquitectura **SysLab 2.0** para la materia de Sistemas Paralelos. Su objetivo principal es desplegar una infraestructura desacoplada y reproducible que resuelva la concurrencia, el aislamiento de procesos y la persistencia de datos mediante contenedores Docker. Integra una capa de persistencia fuertemente tipada con PostgreSQL y Prisma ORM, junto con un módulo de gobernanza y directrices para agentes de Inteligencia Artificial.
 
 ---
 
-## 🚀 Guía de Despliegue y Ejecución
+## 🛠️ 2. Arquitectura de Tecnologías (SysLab 2.0)
+
+El proyecto está diseñado sobre la arquitectura **SysLab 2.0**, distribuyendo responsabilidades en tres capas principales orquestadas mediante contenedores Docker:
+
+* **Frontend:** React / Node.js — Interfaz de usuario responsiva ejecutada en un contenedor desacoplado (Puerto 3000).
+* **Backend:** Node.js — API RESTful y servidor de aplicaciones encargado de la lógica del sistema (Puerto 4000).
+* **Persistencia / Base de Datos:** PostgreSQL 15 con **Prisma ORM** como mapeador objeto-relacional, control de esquemas y migraciones automáticas (Puerto 5432).
+* **Agente de IA:** Reglas (`rules.md`) e integración de habilidades (`skills`) personalizadas alineadas a las directrices de [TasteSkill](https://www.tasteskill.dev/).
+
+---
+
+## 📁 3. Estructura del Repositorio
+
+```text
+.
+├── agente/                 # Skills e instrucciones del agente de IA
+│   ├── skills/             # Skills importadas de TasteSkill y custom SysLab 2.0
+│   │   ├── backend/
+│   │   │   └── syslab_persistence.json
+│   │   └── tasteskill/
+│   │       └── prisma_agent.json
+│   └── rules.md            # Reglas de comportamiento del agente
+├── backend/                # Código fuente del Backend
+│   ├── prisma/             # Configuración de persistencia
+│   │   ├── migrations/     # Historial de migraciones SQL
+│   │   ├── schema.prisma   # Modelo de datos Prisma
+│   │   └── seed.js         # Script de datos iniciales
+│   ├── .env                # Variables de entorno del backend
+│   ├── Dockerfile          # Imagen Docker del Backend
+│   └── package.json
+├── frontend/               # Código fuente del Frontend
+│   ├── Dockerfile          # Imagen Docker del Frontend
+│   └── package.json
+├── docker-compose.yml      # Orquestación de contenedores (Frontend, Backend, DB)
+└── README.md               # Documentación general del proyecto
+```
+
+---
+
+## 🚀 4. Guía de Ejecución y Despliegue
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone [https://github.com/MrsAbbys/syslab-2.0.git](https://github.com/MrsAbbys/syslab-2.0.git)
+git clone https://github.com/MrsAbbys/syslab-2.0.git
 cd syslab-2.0
 ```
 
-### 2. Orquestar y Levantar Contenedores
+### 2. Construir y Levantar el Entorno Multi-Contenedor
 ```bash
 docker compose up --build -d
 ```
 
 ### 3. Aplicar Migraciones y Carga Inicial (Seed)
 ```bash
+# Aplicar migraciones en PostgreSQL
 docker compose exec backend npx prisma migrate dev --name init
+
+# Ejecutar el script de poblado de datos
 docker compose exec backend node prisma/seed.js
 ```
 
-### 4. Monitoreo y Verificación
+### 4. Verificación de Servicios
 ```bash
+# Comprobar estado de los contenedores
 docker compose ps
+
+# Verificar sincronización del esquema en PostgreSQL
 docker compose exec backend npx prisma migrate status
 ```
-
----
-
-## 📋 Convención de Control de Versiones
-El proyecto implementa el estándar **Conventional Commits** en idioma español:
-- feat(...): Nuevas funcionalidades, modelos de base de datos u orquestación.
-- chore(...): Configuración de dependencias, scripts y módulos del agente.
-- docs(...): Documentación técnica y actualización de guías.
-- fix(...): Corrección de configuraciones o inconsistencias de ejecución.
