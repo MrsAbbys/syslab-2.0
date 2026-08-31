@@ -1,0 +1,5 @@
+{
+  "module": "SysLab-Persistence-2.0",
+  "target": "PostgreSQL",
+  "rules_enforced": ["schema_validation", "seed_integrity", "container_isolation"]
+}

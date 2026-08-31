@@ -1,0 +1,6 @@
+{
+  "skill_name": "tasteskill-prisma-handler",
+  "version": "1.0.0",
+  "description": "Skill para automatización de consultas y validaciones en Prisma ORM",
+  "provider": "TasteSkill"
+}
